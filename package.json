@@ -1,0 +1,35 @@
+{
+  "name": "advent-of-code-2020",
+  "version": "1.0.0",
+  "description": "Advent of Code 2020 exercises",
+  "main": "index.js",
+  "author": "Teemu Mäntyharju <teemu.mantyharju@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "execute": "ts-node",
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(src/.*/.*.test.ts)$",
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "json",
+      "node"
+    ]
+  },
+  "dependencies": {
+    "typescript": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.16",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.0"
+  }
+}

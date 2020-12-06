@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+    "target": "es5",                          
+    "module": "commonjs",                     
+    "baseUrl": "./",                         
+    "downlevelIteration": true,            
+    "strict": true,                        
+    "noImplicitAny": true,                 
+    "strictNullChecks": true,              
+    "strictFunctionTypes": true,           
+    "strictPropertyInitialization": true,  
+    "noImplicitThis": true,                
+    "alwaysStrict": true,                  
+    "noUnusedLocals": true,                
+    "noUnusedParameters": true,            
+    "noImplicitReturns": true,             
+    "noFallthroughCasesInSwitch": true,    
+    "typeRoots": ["node_modules/@types"],  
+    "types": ["jest", "node"],             
+    "esModuleInterop": true,               
+    "skipLibCheck": true,                  
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
