@@ -3,6 +3,7 @@ import { CALENDAR_2_INPUT } from "./calendar2-input";
 const PASSWORD_ENTRY_PATTERN = /^[0-9]*-[0-9]* [a-z]{1}: [a-z]*\b/;
 
 // Part 1 - https://adventofcode.com/2020/day/2
+// Find the amount of password entries that match the Toboggan Corporate Policies
 export const calendar2_part1 = (input: string[]): number => {
   return input.filter((i) => {
     // Early exit if the string does not match the password entry pattern
@@ -24,10 +25,13 @@ export const calendar2_part1 = (input: string[]): number => {
   }).length;
 };
 
-console.log('== Calendar 2 - part 1', );
-console.log(`output: ${calendar2_part1(CALENDAR_2_INPUT)}`);
+console.log(`
+== Calendar 2 - part 1
+output: ${calendar2_part1(CALENDAR_2_INPUT)}
+`);
 
 // Part 2 - https://adventofcode.com/2020/day/2#part2
+// Find the amount of password entries that match the Toboggan Corporate Policies
 export const calendar2_part2 = (input: string[]): number => {
   return input.filter((i) => {
     // Early exit if the string does not match the password entry pattern
@@ -48,5 +52,7 @@ export const calendar2_part2 = (input: string[]): number => {
   }).length;
 }
 
-console.log('== Calendar 2 - part 2', );
-console.log(`output: ${calendar2_part2(CALENDAR_2_INPUT)}`);
+console.log(`
+== Calendar 2 - part 2
+output: ${calendar2_part2(CALENDAR_2_INPUT)}
+`);

@@ -1,6 +1,6 @@
 import { CALENDAR_1_INPUT } from './calendar1-input';
 
-// Part 1
+// Part 1 - https://adventofcode.com/2020/day/1
 // Find two entries that sum up to the given target and return their multiplication
 export const calendar1_part1 = (input: number[], targetSum: number): number | undefined => {
   // Map the entries to a multiplication of their expected counterpart.
@@ -20,7 +20,7 @@ console.log(`
 output: ${calendar1_part1(CALENDAR_1_INPUT, 2020)}
 `);
 
-// Part 2
+// Part 2 - https://adventofcode.com/2020/day/1#part2
 // Find three entries that sum up to the given target and return their multiplication
 export const calendar1_part2 = (input: number[], targetSum: number): number | undefined => {
   // Here we can utilize the function we created during the first part.
