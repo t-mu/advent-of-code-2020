@@ -26,7 +26,7 @@ export const calendar1_part2 = (input: number[], targetSum: number): number | un
   // Here we can utilize the function we created during the first part.
   // For each entry we need to know which other two entries together make up the target sum.
   const output = input.reduce((multiplication: number, inputNumber: number) => {
-    // If we'll deduct each entry from this function's target sum, we'll get a number that should be the sum of two other entries.
+    // If we'll reduce each entry from this function's target sum, we'll get a number that should be the sum of two other entries.
     // We can now pass that number as a parameter to calendar1_part1 and see which two entries together make the amount.
     // For each entry we just need to know whether we got a value from calendar1_part1 or not, if so then we'll know
     // that the entry in question is one of our matches.
