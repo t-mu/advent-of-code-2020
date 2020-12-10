@@ -1,67 +1,99 @@
 import { CALENDAR_3_INPUT } from "./calendar3-input";
 
-export enum InputError {
-  INPUT_MIN_LENGTH = 'The input needs to have at least one entry.',
-  ENTRY_MIN_LENGTH = 'Entries need to contain at least one character',
-  ILLEGAL_CHARACTERS = 'One or more entries contain illegal characters.',
-  MIXED_LENGTHS = 'One or more entries are different in length.',
+export enum ErrorMessage {
+  ROWS_MIN_LENGTH = 'At least one row needs to be provided.',
+  ROW_MIN_LENGTH = 'Rows need to contain at least one character.',
+  ILLEGAL_CHARACTERS = 'One or more rows contain illegal characters.',
+  MIXED_LENGTHS = 'One or more rows are different in length.',
+  MIN_MOVEMENT = 'X needs to be at least 0 and Y needs to be at least 1.',
+}
+
+type Coords = {
+  x: number,
+  y: number,
+}
+
+type Tracker = {
+  trees: number,
+  landingIndex: number,
 }
 
 const ALLOWED_CHARACTERS = /^(\.|#)+$/;
-const validateInput = (input: string[]): void => {
+const validateParams = (rows: string[], movementPattern: Coords): void => {
   // Check if the input is empty
-  if (input.length === 0) {
-    throw new Error(InputError.INPUT_MIN_LENGTH);
+  if (rows.length === 0) {
+    throw new Error(ErrorMessage.ROWS_MIN_LENGTH);
+  }
+
+  // Check if movement pattern is valid
+  // Y needs to be at least one so that we will move towards the bottom
+  if (movementPattern.x < 0 || movementPattern.y < 1) {
+    throw new Error(ErrorMessage.MIN_MOVEMENT);
   }
 
   // For each entry check that they
-  input.forEach((entry) => {
+  rows.forEach((entry) => {
     // are not blank
     if (entry.length < 1) {
-      throw new Error(InputError.ENTRY_MIN_LENGTH)
+      throw new Error(ErrorMessage.ROW_MIN_LENGTH)
     }
     // are the same length
-    if (entry.length !== input[0].length) {
-      throw new Error(InputError.MIXED_LENGTHS);
+    if (entry.length !== rows[0].length) {
+      throw new Error(ErrorMessage.MIXED_LENGTHS);
     }
     // do not contain illegal characters
     if (!ALLOWED_CHARACTERS.test(entry)) {
-      throw new Error(InputError.ILLEGAL_CHARACTERS);
+      throw new Error(ErrorMessage.ILLEGAL_CHARACTERS);
     }
   });
 };
 
 // Part 1 - https://adventofcode.com/2020/day/3
-// Calculate the amount of trees (#) while traversing the matrix from top-left corner to the bottom
-export const calendar3_part1 = (input: string[]): number => {  
-  // First validate the input
-  validateInput(input);
+// Calculate the amount of trees (#) while traversing the row matrix from top-left corner to the bottom
+export const calendar3_part1 = (rows: string[], movementPattern: Coords): number => {  
+  // First validate the given params
+  validateParams(rows, movementPattern);
 
-  let amountOfTrees = 0;
+  // I'm using reduce here for iterating the rows since I can easily pass in the next landingIndex 
+  // for the next row and keep track of the trees without having to create a new variable outside the function scope.
+  // This makes it also "side-effect free"
+  return rows.reduce(({ trees, landingIndex }, row, rowIndex) => {
+    const isLastRow = rowIndex === rows.length - 1;
+    // Here we check if the row is the only one, meaning it also the last one.
+    // Semantically it's the best but I'll roll with it
+    const isFirstRow = rowIndex === 0 && !isLastRow;
+    // We will always land in the last row, hence the check for that. Otherwise we'll check if the rowIndex modulo of y is 0.
+    // This means we're in the next landing row as we skip the first one (index 0). So the modulo result should always be 0 for
+    // the landing rows e.g. start from 0 and y = 2, the next landing index would be 0 + 2 = 2, and 2 % 2 = 0. The same thing
+    // goes for the following landing indexes 2 + 2 = 4, and 4 % 2 = 0 and so on and so on.
+    const isLandingRow = isLastRow || rowIndex % movementPattern.y === 0;
 
-  // I'm using reduce here for iterating the input since I can easily pass in the next blockIndex 
-  // for the next entry without having to create a new variable and keep track of that.
-  input.reduce((blockIndex, entry, inputIndex) => {
-    // If the first entry is also the last one, check our starting index for a tree, otherwise
-    // we'll skip the first entry and start traversing towards the 'bottom'.
-    const blockIsTree = (inputIndex !== 0 || input.length - 1 === 0) && entry[blockIndex] === '#';
-    // increase the next index to be accessed by 3 when moving forward as per the instructions.
-    const nextEntryIndex = blockIndex + 3;
-    // Simply increase the amount of trees if the current block is a tree.
-    amountOfTrees = blockIsTree ? amountOfTrees + 1 : amountOfTrees;
-    // When we calculate the next blockIndex, we'll need to take into account the transition beyond one entry's
-    // boundaries (since the pattern repeats itself infinitely). We'll check whether the next blockIndex is out of
-    // bounds, and if so we'll reduce the entry's length from the new supposed index to get the index as if we 
-    // would travel to the next repeating pattern. Otherwise we can just return the next index.
-    blockIndex = nextEntryIndex > entry.length - 1 ? nextEntryIndex - entry.length : nextEntryIndex;
+    if (isFirstRow || isLandingRow) {
+      // For the first row we'll skip the tree-check and start traversing towards the 'bottom'. 
+      // We need to also check if the row is the last one since we might might not land on the last "row" with even steps.
+      const landingIndexContainsATree = !isFirstRow && row[landingIndex] === '#';
+      // Increase the next index by movementPattern.x when moving forward.
+      const nextLandingIndex = landingIndex + movementPattern.x;
+      const indexIsOutOfBounds = nextLandingIndex > row.length - 1;
 
-    return blockIndex;
-  }, 0);
-  
-  return amountOfTrees;
+      // When we set the next landingIndex, we'll need to take into account the transition beyond one row's
+      // boundaries (since the pattern repeats itself infinitely). We'll check whether the next landingIndex is out of
+      // bounds, and if so we'll reduce the row's length from the next supposed landingIndex to get the index as if we 
+      // would travel to the next repeating pattern. Otherwise we can just return the next landingIndex.
+      return {
+        trees: landingIndexContainsATree ? trees + 1 : trees,
+        landingIndex: indexIsOutOfBounds ? nextLandingIndex - row.length : nextLandingIndex,
+      }
+    }
+
+    return { trees, landingIndex };
+  }, {
+    trees: 0,
+    landingIndex: 0,
+  } as Tracker).trees; // Here we'll just return the trees property from the reduced tracker object
 }
 
 console.log(`
 == Calendar 3 - part 1
-output: ${calendar3_part1(CALENDAR_3_INPUT)}
+output: ${calendar3_part1(CALENDAR_3_INPUT, { x: 3, y: 1 })}
 `);

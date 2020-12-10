@@ -1,3 +1,6 @@
+// I've formatted the input to be a string array.
+// It basically allows me to handle it in a matrix format as
+// a string is just an array of individual characters
 export const CALENDAR_3_INPUT: string[] = [
   '..#.......#..##...#...#..#.#...',
   '..##..#..#.....#.........#....#',
